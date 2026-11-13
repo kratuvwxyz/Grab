@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#17172e" />
+    <title>Head, Shoulders... GRAB!</title>
+    <style>
+      :root {
+        font-family:
+          ui-rounded,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          sans-serif;
+        color: #fff;
+        background: #17172e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        background: radial-gradient(circle at 20% 15%, #41336f, transparent 45%), radial-gradient(circle at 90% 80%, #184f64, transparent 45%), #17172e;
+      }
+      .app {
+        width: min(100%, 720px);
+        text-align: center;
+      }
+      h1 {
+        font-size: clamp(2rem, 8vw, 3.3rem);
+        margin: 0 0 8px;
+      }
+      p {
+        color: #d5d3e7;
+        margin: 0 0 20px;
+      }
+      .stage {
+        border: 2px solid #ffffff30;
+        border-radius: 30px;
+        background: #ffffff12;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 18px 50px #0003;
+      }
+      .word {
+        font-size: clamp(3.5rem, 14vw, 6.8rem);
+        font-weight: 1000;
+        line-height: 1.1;
+        overflow-wrap: anywhere;
+      }
+      .emoji {
+        font-size: 3.4rem;
+        margin-bottom: 10px;
+      }
+      .stage.grab {
+        background: #ffca36;
+        color: #302000;
+        animation: pop 0.35s ease-out;
+      }
+      .stage.grab .word {
+        font-size: clamp(4.2rem, 16vw, 7rem);
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(0.93);
+        }
+        65% {
+          transform: scale(1.035);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .status {
+        font-size: 0.95rem;
+        margin: 16px 0;
+        color: #e6e5f4;
+        min-height: 24px;
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        margin: 15px 0;
+      }
+      .controls button {
+        flex: 1;
+      }
+      button,
+      select,
+      input {
+        font: inherit;
+      }
+      button {
+        border: 0;
+        border-radius: 16px;
+        padding: 17px 15px;
+        font-weight: 850;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .start {
+        background: #7ef0a5;
+        color: #113622;
+      }
+      .stop {
+        background: #f8a7b7;
+        color: #4c1626;
+      }
+      .reset {
+        background: #dcd8ff;
+        color: #29234e;
+      }
+      .settings {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        text-align: left;
+        margin-top: 16px;
+      }
+      .setting {
+        background: #ffffff12;
+        padding: 13px;
+        border-radius: 16px;
+      }
+      .setting label {
+        display: block;
+        font-size: 0.83rem;
+        color: #dcd9f4;
+        margin-bottom: 7px;
+      }
+      .setting select,
+      .setting input {
+        width: 100%;
+        border-radius: 10px;
+        padding: 10px;
+        background: #292845;
+        color: white;
+        border: 1px solid #ffffff35;
+      }
+      .hint {
+        font-size: 0.82rem;
+        margin-top: 18px;
+        line-height: 1.5;
+        color: #d4d1e6;
+      }
+      .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        justify-content: center;
+        font-size: 0.95rem;
+      }
+      .check input {
+        width: 18px;
+        height: 18px;
+      }
+      @media (max-width: 360px) {
+        .settings {
+          grid-template-columns: 1fr;
+        }
+        .controls {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <h1>🙆 Head, Shoulders... <span style="color: #ffda65">GRAB!</span></h1>
+      <p>Listen, touch the body part, then race to grab the object!</p>
+      <section id="stage" class="stage" aria-live="polite">
+        <div id="emoji" class="emoji">🎯</div>
+        <div id="word" class="word">Ready?</div>
+      </section>
+      <div id="status" class="status" role="status">Put a soft toy in the middle, then press Start.</div>
+      <div class="controls"><button id="start" class="start">▶ Start</button><button id="stop" class="stop" disabled>⏸ Stop</button><button id="reset" class="reset">↻ Reset</button></div>
+      <div class="settings">
+        <div class="setting">
+          <label for="interval">Seconds between calls</label
+          ><select id="interval">
+            <option value="1">1 second</option>
+            <option value="1.5">1.5 seconds</option>
+            <option value="2" selected>2 seconds</option>
+            <option value="2.5">2.5 seconds</option>
+            <option value="3">3 seconds</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label for="round">When should GRAB happen?</label
+          ><select id="round">
+            <option value="4,8">Quick: 4–8 calls</option>
+            <option value="6,12" selected>Normal: 6–12 calls</option>
+            <option value="10,18">Long: 10–18 calls</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label for="voice">Voice speed</label
+          ><select id="voice">
+            <option value="0.8">Slow</option>
+            <option value="1" selected>Normal</option>
+            <option value="1.2">Fast</option>
+          </select>
+        </div>
+        <!-- <div class="setting"><label for="volume">Voice volume</label><input id="volume" type="range" min="0" max="1" value="1" step="0.1" /></div> -->
+      </div>
+      <label class="check"><input id="sound" type="checkbox" checked /> Speak each word aloud 🔊</label>
+      <div class="hint">Every round chooses a surprise GRAB moment. The game stops automatically after GRAB. Use a soft, safe object and keep enough room between players. Voice uses your browser's built-in speech.</div>
+    </main>
+    <script>
+      (() => {
+        "use strict";
+        const $ = (id) => document.getElementById(id),
+          stage = $("stage"),
+          word = $("word"),
+          emoji = $("emoji"),
+          status = $("status"),
+          start = $("start"),
+          stop = $("stop"),
+          reset = $("reset");
+        const parts = [
+          ["Head", "🧑"],
+          ["Shoulders", "🙆"],
+          ["Knees", "🦵"],
+          ["Toes", "🦶"],
+          ["Eyes", "👀"],
+          ["Ears", "👂"],
+          ["Nose", "👃"],
+          ["Elbows", "💪"],
+          ["Tummy", "😊"],
+        ];
+        let timer = null,
+          active = false,
+          count = 0,
+          target = 0,
+          last = "";
+        function say(text) {
+          if (!$("sound").checked || !("speechSynthesis" in window)) return;
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = "en-US";
+          u.rate = Number($("voice").value);
+          u.pitch = 1.12;
+          u.volume = 1; // keep volume at max, user can adjust via the range input
+          window.speechSynthesis.speak(u);
+        }
+        function clear() {
+          if (timer !== null) {
+            clearTimeout(timer);
+            timer = null;
+          }
+          window.speechSynthesis?.cancel();
+          active = false;
+          start.disabled = false;
+          stop.disabled = true;
+        }
+        function show(t, e, grab = false) {
+          word.textContent = t;
+          emoji.textContent = e;
+          stage.classList.toggle("grab", grab);
+        }
+        function next() {
+          if (!active) return;
+          if (count >= target) {
+            show("GRAB!", "🧸", true);
+            status.textContent = "🎉 Grab the toy! Round finished. Press Start to play again.";
+            clear();
+            say("GRAB!");
+            return;
+          }
+          let choices = parts.filter((p) => p[0] !== last),
+            item = choices[Math.floor(Math.random() * choices.length)];
+          last = item[0];
+          count++;
+          show(item[0], item[1]);
+          status.textContent = `Call ${count} • Surprise GRAB is coming!`;
+          say(item[0]);
+          timer = setTimeout(next, Number($("interval").value) * 1000);
+        }
+        start.onclick = () => {
+          clear();
+          const [min, max] = $("round").value.split(",").map(Number);
+          target = min + Math.floor(Math.random() * (max - min + 1));
+          count = 0;
+          last = "";
+          active = true;
+          start.disabled = true;
+          stop.disabled = false;
+          stage.classList.remove("grab");
+          next();
+        };
+        stop.onclick = () => {
+          clear();
+          status.textContent = "Stopped. Press Start for a new round.";
+        };
+        reset.onclick = () => {
+          clear();
+          count = 0;
+          last = "";
+          show("Ready?", "🎯");
+          status.textContent = "Put a soft toy in the middle, then press Start.";
+        };
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden && active) {
+            clear();
+            status.textContent = "Paused because the page was hidden. Press Start to play again.";
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
